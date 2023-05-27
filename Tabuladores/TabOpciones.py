@@ -1,16 +1,19 @@
 import json
 from tkinter import filedialog, messagebox
 
-from PySide6.QtGui import Qt
+from PySide6.QtGui import Qt, QFont
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QGroupBox, QPushButton, QGridLayout, QCheckBox,
-                               QTextEdit)
+                               QTextEdit, QFileDialog, QLabel)
 
 from Utiles.Titulo import Titulo
 
 
 class TabOpciones(QWidget):
-    def __init__(self) -> None:
+    def __init__(self, tipo_fuente, tamano_fuente) -> None:
         super().__init__()
+
+        # Agregamos algunas configuraciones a la ventana
+        self.setFont(QFont(tipo_fuente, tamano_fuente))
 
         # Declaramos las listas
         self.check_box_documentos = []
@@ -27,8 +30,6 @@ class TabOpciones(QWidget):
         self.layout_principal = QVBoxLayout()
         self.layout_principal.setAlignment(Qt.AlignmentFlag.AlignTop)
 
-        # self.tipografia_widgets = tipografia_widgets
-        # self.tabulador_principal = tabulador_principal
         self.ruta_carpeta = None
 
         # Creamos un Titulo para la Ventana
@@ -49,7 +50,7 @@ class TabOpciones(QWidget):
 
         boton_agregar_ruta = QPushButton(text="Añadir Ruta")
         boton_agregar_ruta.setFixedSize(140, 40)
-        boton_agregar_ruta.clicked.connect(lambda: self.abrir_directorio())
+        boton_agregar_ruta.clicked.connect(self.abrirDirectorio)
 
         boton_organizar = QPushButton(text="Organizar")
         boton_organizar.setFixedSize(140, 40)
@@ -72,49 +73,59 @@ class TabOpciones(QWidget):
         layout_extensiones = QGridLayout()
         frame_extensiones.setLayout(layout_extensiones)
 
+        layout_extensiones.addWidget(QLabel("Documentos"), 0, 0)
+
         for i in range(len(self.extensiones_documentos)):
             check_box = QCheckBox()
             check_box.setText(self.extensiones_documentos[i])
-            layout_extensiones.addWidget(check_box, i, 0)
+            layout_extensiones.addWidget(check_box, i+1, 0)
             self.check_box_documentos.append(check_box)
+
+        layout_extensiones.addWidget(QLabel("Imagenes"), 0, 1)
 
         for i in range(len(self.extensiones_imagenes)):
             check_box = QCheckBox()
             check_box.setText(self.extensiones_imagenes[i])
-            layout_extensiones.addWidget(check_box, i, 1)
+            layout_extensiones.addWidget(check_box, i+1, 1)
             self.check_box_imagenes.append(check_box)
+
+        layout_extensiones.addWidget(QLabel("Videos"), 0, 2)
 
         for i in range(len(self.extensiones_videos)):
             check_box = QCheckBox()
             check_box.setText(self.extensiones_videos[i])
-            layout_extensiones.addWidget(check_box, i, 2)
+            layout_extensiones.addWidget(check_box, i+1, 2)
             self.check_box_videos.append(check_box)
+
+        layout_extensiones.addWidget(QLabel("Audios"), 0, 3)
 
         for i in range(len(self.extensiones_audios)):
             check_box = QCheckBox()
             check_box.setText(self.extensiones_videos[i])
-            layout_extensiones.addWidget(check_box, i, 3)
+            layout_extensiones.addWidget(check_box, i+1, 3)
             self.check_box_audios.append(check_box)
+
+        layout_extensiones.addWidget(QLabel("Compresiones"), 0, 4)
 
         for i in range(len(self.extensiones_compresiones)):
             check_box = QCheckBox()
             check_box.setText(self.extensiones_compresiones[i])
-            layout_extensiones.addWidget(check_box, i, 4)
+            layout_extensiones.addWidget(check_box, i+1, 4)
             self.check_box_compresiones.append(check_box)
 
         self.layout_principal.addWidget(frame_extensiones)
 
-    def abrir_directorio(self):
-        self.ruta_carpeta = filedialog.askdirectory(title="Buscar Ruta", initialdir="Desktop")
+    def abrirDirectorio(self):
+        file_dialog = QFileDialog()
+        file_dialog.setFileMode(QFileDialog.FileMode.Directory)
 
-        if self.ruta_carpeta:
-            self.caja_texto_ruta.config(state="normal")
-            self.caja_texto_ruta.delete(1.0, "end")
-            self.caja_texto_ruta.insert(1.0, "Ruta : " + self.ruta_carpeta)
-            self.caja_texto_ruta.config(state="disable")
+        if file_dialog.exec() == QFileDialog.DialogCode.Accepted:
+            self.ruta_carpeta = file_dialog.selectedFiles()[0]
+            self.caja_texto_ruta.setText(f"Ruta: {self.ruta_carpeta}")
 
     def crearCajaRuta(self):
         self.caja_texto_ruta = QTextEdit()
+        self.caja_texto_ruta.setReadOnly(True)
         self.caja_texto_ruta.setFixedHeight(100)
         self.layout_principal.addWidget(self.caja_texto_ruta)
 
