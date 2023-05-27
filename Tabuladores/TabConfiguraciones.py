@@ -49,14 +49,14 @@ class TabConfiguraciones(QWidget):
         layout_horizontal.setAlignment(Qt.AlignmentFlag.AlignCenter)
         frame_fuente_tamano.setLayout(layout_horizontal)
 
-        layout_horizontal.addWidget(QLabel("Fuente: "))
+        layout_horizontal.addWidget(QLabel("Fuente:"))
         self.combo = QComboBox()
         self.combo.setFixedHeight(30)
         self.combo.addItems(self.lista_tipografias.split(","))
         self.combo.setCurrentText(self.tipo_fuente)
         layout_horizontal.addWidget(self.combo)
 
-        layout_horizontal.addWidget(QLabel("Tamaño Fuente: "))
+        layout_horizontal.addWidget(QLabel("Tamaño Fuente:"))
         self.spinbox = QSpinBox()
         self.spinbox.setFixedHeight(30)
         self.spinbox.setMinimum(1)
